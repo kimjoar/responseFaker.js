@@ -2,8 +2,8 @@ responseFaker.js
 ================
 
 A high-level abstraction over [Sinon.js](http://sinonjs.org/)
-[`fakeServer`](http://sinonjs.org/docs/#fakeServer) to make your test
-code less noisy.
+[`fakeServer`](http://sinonjs.org/docs/#fakeServer) to make your tests
+less noisy.
 
 Instead of writing:
 
