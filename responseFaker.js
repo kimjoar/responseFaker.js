@@ -82,7 +82,14 @@ var responseFaker = (function(root, sinon) {
   //
   // Parameters:
   //
-  // `responses` is a hash with URLs as keys and responses as values.
+  // `responses` is a hash with URLs as keys and responses as values. These
+  // responses can be defined in three ways:
+  //
+  // - as a string
+  // - as an object that can be JSON stringified
+  // - as an object that includes the key `response` with the response as
+  //   either a string or an object that can be JSON stringified, and
+  //   optionally the keys `statusCode` and/or `headers`
   //
   // `callback` is the callback which should trigger an Ajax request, i.e. this
   // callback should include those Ajax requests that should have the specified
