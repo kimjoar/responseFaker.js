@@ -37,6 +37,13 @@ var responseFaker = (function(root, sinon) {
   // `callback` is the callback which should trigger an Ajax request, i.e. this
   // callback should include those Ajax requests that should have the specified
   // response.
+  //
+  // **Example:**
+  //
+  //     var response = { error: "Everything failed" };
+  //     fakeResponse(response, { statusCode: 403 }, function() {
+  //       // perform ajax request
+  //     });
   function fakeResponse(response, options, callback) {
     var server;
 
@@ -80,12 +87,24 @@ var responseFaker = (function(root, sinon) {
   // `callback` is the callback which should trigger an Ajax request, i.e. this
   // callback should include those Ajax requests that should have the specified
   // responses.
+  //
+  // **Example:**
+  //
+  //     var responses = {
+  //       "/emails": [{ from: "mail@kimjoar.net", subject: "Testing" }],
+  //       "/user": { username: "kimjoar" }
+  //     }
+  //
+  //     fakeResponses(responses, function() {
+  //       // perform ajax requests to `/emails` and `/user`
+  //     });
   function fakeResponses(responses, callback) {
     var server = sinon.fakeServer.create(),
         response,
         options,
         url;
 
+    // Set up the response for each URL
     for (url in responses) {
       response = responses[url];
 
