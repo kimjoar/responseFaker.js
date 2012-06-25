@@ -54,8 +54,17 @@ fakeResponses
 
 ```javascript
 var responses = {
+  // as object which can be JSON stringified
   "/emails": [{ from: "mail@kimjoar.net", subject: "Testing" }],
-  "/user": { username: "kimjoar" }
+
+  // as JSON string
+  "/user": '{ "username": "kimjoar" }',
+
+  // object which contain response, statuscode, and/or headers
+  "/fail": {
+    response: { error: "Not found"},
+    statusCode: 404
+  }
 }
 
 fakeResponses(responses, function() {
