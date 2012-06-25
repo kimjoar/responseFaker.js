@@ -57,16 +57,11 @@ describe("Response faker", function() {
     });
 
     it("has the same response for all Ajax requests", function() {
-      var expectedResponse = this.response;
-      var check = function(responseStatus, responseText) {
-        expect(responseStatus).toEqual(200);
-        expect(responseText).toEqual(expectedResponse);
-      };
-
-      this.obj.fakeResponse(expectedResponse, this.options, function() {
-        performRequest("/some-url", check);
-        performRequest("/other-url", check);
-        performRequest("/third-url", check);
+      var response = this.response;
+      this.obj.fakeResponse(response, this.options, function() {
+        request("/some-url",  expectResponse(response));
+        request("/other-url", expectResponse(response));
+        request("/third-url", expectResponse(response));
       });
     });
 
@@ -109,16 +104,10 @@ describe("Response faker", function() {
     it("gives different responses for different URLs", function() {
       var responses = this.responses;
 
-      var check = function(responseStatus, responseText, url) {
-        var expectedResponse = responses[url];
-        expect(responseStatus).toEqual(200);
-        expect(responseText).toEqual(expectedResponse);
-      };
-
       this.obj.fakeResponses(responses, function() {
-        performRequest("/some-url", check);
-        performRequest("/other-url", check);
-        performRequest("/third-url", check);
+        request("/some-url",  expectResponse(responses["/some-url"]));
+        request("/other-url", expectResponse(responses["/other-url"]));
+        request("/third-url", expectResponse(responses["/third-url"]));
       });
     });
 
@@ -128,18 +117,39 @@ describe("Response faker", function() {
         "/some-url": response
       };
 
-      var check = function(responseStatus, responseText) {
-        expect(responseStatus).toEqual(200);
-        expect(responseText).toEqual(JSON.stringify(response));
+      this.obj.fakeResponses(responses, function() {
+        request("/some-url", expectResponse(JSON.stringify(response)));
+      });
+    });
+
+    it("allows status code and headers to be specified to a url", function() {
+      var response = { error: "Not found" };
+      var response2 = '{ to: "mail@kimjoar.net" }';
+      var responses = {
+        "/user": {
+          response: response,
+          statusCode: 404
+        },
+        "/email": {
+          response: response2
+        }
       };
 
       this.obj.fakeResponses(responses, function() {
-        performRequest("/some-url", check);
+        request("/user", expectResponse(JSON.stringify(response), 404));
+        request("/email", expectResponse(response2, 200));
       });
     });
   });
 
-  function performRequest(url, callback) {
+  function expectResponse(response, statusCode) {
+    return function(responseStatus, responseText) {
+      expect(responseStatus).toEqual(statusCode || 200);
+      expect(responseText).toEqual(response);
+    };
+  }
+
+  function request(url, callback) {
     var httpRequest = new XMLHttpRequest();
     httpRequest.onreadystatechange = function() {
       if (httpRequest.readyState === 4) {

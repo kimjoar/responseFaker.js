@@ -108,12 +108,19 @@ var responseFaker = (function(root, sinon) {
     for (url in responses) {
       response = responses[url];
 
+      options = {};
+
       if (typeof response !== "string") {
-        response = JSON.stringify(response);
+        if (response.statusCode || response.headers || response.response) {
+          options.statusCode = response.statusCode;
+          options.headers = response.headers;
+          response = response.response;
+        }
+        if (typeof response !== "string") {
+          response = JSON.stringify(response);
+        }
       }
 
-      // Set default options
-      options = {};
       if (!options.statusCode) options.statusCode = 200;
       if (!options.headers) options.headers = { "Content-Type": "application/json" };
 
