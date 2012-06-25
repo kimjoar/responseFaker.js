@@ -3,7 +3,7 @@
   "name": "responseFaker.js",
   "main": "./responseFaker",
   "description": "A high-level API for sinon.js fakeServer",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "repository": {
     "url": "https://github.com/kjbekkelund/responseFaker.js"
   },

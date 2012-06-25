@@ -1,4 +1,4 @@
-//     responseFaker.js 0.1.1
+//     responseFaker.js 0.1.2
 //     A high-level API for sinon.js fakeServer
 //
 //     Copyright 2012, Kim Joar Bekkelund, MIT Licensed
