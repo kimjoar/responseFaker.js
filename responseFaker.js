@@ -1,4 +1,4 @@
-//     responseFaker.js 0.1.0
+//     responseFaker.js 0.1.1
 //     A high-level API for sinon.js fakeServer
 //
 //     Copyright 2012, Kim Joar Bekkelund, MIT Licensed
@@ -12,7 +12,8 @@
 //
 //     responseFaker.call(window);
 //
-// In both cases the `fakeResponse` helper will be available.
+// In both cases the `fakeResponse` and `fakeResponses` helpers will
+// be available.
 var responseFaker = (function(root, sinon) {
 
   // fakeResponse
@@ -37,6 +38,8 @@ var responseFaker = (function(root, sinon) {
   // callback should include those Ajax requests that should have the specified
   // response.
   function fakeResponse(response, options, callback) {
+    var server;
+
     // As options are optional, `callback` can be the second argument.
     if (typeof callback === "undefined" && typeof options === "function") {
       callback = options;
@@ -54,7 +57,7 @@ var responseFaker = (function(root, sinon) {
     if (!options.headers) options.headers = { "Content-Type": "application/json" };
 
     // Set up the response
-    var server = sinon.fakeServer.create();
+    server = sinon.fakeServer.create();
     server.respondWith([options.statusCode, options.headers, response]);
 
     // Trigger callback, which should include all the Ajax requests we want to
@@ -65,9 +68,49 @@ var responseFaker = (function(root, sinon) {
     server.restore();
   }
 
+  // fakeResponses
+  // -------------
+  //
+  // High-level helper for responding differently to Ajax requests based on URL
+  //
+  // Parameters:
+  //
+  // `responses` is a hash with URLs as keys and responses as values.
+  //
+  // `callback` is the callback which should trigger an Ajax request, i.e. this
+  // callback should include those Ajax requests that should have the specified
+  // responses.
+  function fakeResponses(responses, callback) {
+    var server = sinon.fakeServer.create(),
+        response,
+        options,
+        url;
+
+    for (url in responses) {
+      response = responses[url];
+
+      if (typeof response !== "string") {
+        response = JSON.stringify(response);
+      }
+
+      // Set default options
+      options = {};
+      if (!options.statusCode) options.statusCode = 200;
+      if (!options.headers) options.headers = { "Content-Type": "application/json" };
+
+      server.respondWith(new RegExp(url), [options.statusCode, options.headers, response]);
+    }
+
+    callback();
+
+    server.respond();
+    server.restore();
+  }
+
   // The mixin which include the helpers on the passed object.
   return function() {
     this.fakeResponse = fakeResponse;
+    this.fakeResponses = fakeResponses;
 
     return this;
   };

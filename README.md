@@ -1,9 +1,18 @@
 responseFaker.js
 ================
 
-A high-level abstraction over [Sinon.js](http://sinonjs.org/)
+High-level abstractions over [Sinon.js](http://sinonjs.org/)
 [`fakeServer`](http://sinonjs.org/docs/#fakeServer) to make your tests
 less noisy.
+
+There are two helpers:
+
+* `fakeResponse` which returns the same response for all AJAX requests.
+* `fakeResponses` which returns different responses based on specified
+  URLs.
+
+fakeResponse
+------------
 
 Instead of writing:
 
@@ -40,15 +49,33 @@ fakeResponse(response, options, function() {
 };
 ```
 
-You can include the `fakeResponse` helper in any object, also the global
-object:
+fakeResponses
+-------------
+
+```javascript
+var responses = {
+  "/emails": [{ from: "mail@kimjoar.net", subject: "Testing" }],
+  "/user": { username: "kimjoar" }
+}
+
+fakeResponses(responses, function() {
+  // perform ajax requests to `/emails` and `/user`
+});
+```
+
+Include the helpers
+-------------------
+
+You can include `fakeResponse` and `fakeResponses` in any object,
+including the global object:
 
 ```javascript
 var obj = {};
 responseFaker.call(obj)
-// you now have `obj.fakeResponse`
+// you now have `obj.fakeResponse` and `obj.fakeResponses`
 
 // or, to the global object, i.e. `window` in browsers
 responseFaker.call(window);
-// you can now call `fakeResponse` directly all over your code
+// you can now call `fakeResponse` and `fakeResponses` directly all over
+// your code
 ```

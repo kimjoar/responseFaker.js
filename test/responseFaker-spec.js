@@ -13,18 +13,21 @@ buster.assertions.add("respondedWith", {
 describe("Response faker", function() {
   beforeEach(function() {
     this.obj = {};
-    this.response = "{}";
-    this.options = {};
     this.noOp = function() {};
 
     responseFaker.call(this.obj);
   });
 
-  it("can be mixed in to an object", function() {
-    expect(this.obj.fakeResponse).toBeDefined();
-  });
-
   describe("fake response", function() {
+    beforeEach(function() {
+      this.response = "{}";
+      this.options = {};
+    });
+
+    it("is mixed in", function() {
+      expect(this.obj.fakeResponse).toBeDefined();
+    });
+
     it("executes the callback", function() {
       var spy = this.spy();
 
@@ -67,7 +70,7 @@ describe("Response faker", function() {
       });
     });
 
-    it("handles object responses by JSON stringifying them", function() {
+    it("JSON stringifies object responses", function() {
       var server = sinon.fakeServer.create();
       sinon.stub(server, "respondWith");
       sinon.stub(sinon.fakeServer, "create").returns(server);
@@ -82,11 +85,65 @@ describe("Response faker", function() {
     });
   });
 
+  describe("fakeResponses", function() {
+    beforeEach(function() {
+      this.responses = {
+        "/some-url": '{ "name": "Kim Joar" }',
+        "/other-url": '{ "company": "BEKK" }',
+        "/third-url": '{ "country": "Norway" }'
+      };
+    });
+
+    it("is mixed in", function() {
+      expect(this.obj.fakeResponses).toBeDefined();
+    });
+
+    it("executes the callback", function() {
+      var spy = this.spy();
+
+      this.obj.fakeResponses(this.responses, spy);
+
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it("gives different responses for different URLs", function() {
+      var responses = this.responses;
+
+      var check = function(responseStatus, responseText, url) {
+        var expectedResponse = responses[url];
+        expect(responseStatus).toEqual(200);
+        expect(responseText).toEqual(expectedResponse);
+      };
+
+      this.obj.fakeResponses(responses, function() {
+        performRequest("/some-url", check);
+        performRequest("/other-url", check);
+        performRequest("/third-url", check);
+      });
+    });
+
+    it("JSON stringifies object responses", function() {
+      var response = { name: "Kim Joar" };
+      var responses = {
+        "/some-url": response
+      };
+
+      var check = function(responseStatus, responseText) {
+        expect(responseStatus).toEqual(200);
+        expect(responseText).toEqual(JSON.stringify(response));
+      };
+
+      this.obj.fakeResponses(responses, function() {
+        performRequest("/some-url", check);
+      });
+    });
+  });
+
   function performRequest(url, callback) {
     var httpRequest = new XMLHttpRequest();
     httpRequest.onreadystatechange = function() {
       if (httpRequest.readyState === 4) {
-        callback(httpRequest.status, httpRequest.responseText);
+        callback(httpRequest.status, httpRequest.responseText, url);
       }
     };
     httpRequest.open('GET', 'http://www.example.org' + url);
