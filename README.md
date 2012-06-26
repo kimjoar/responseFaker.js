@@ -33,6 +33,7 @@ server.restore();
 var response = { id: 12, comment: "Hey there"; };
 fakeResponse(response, function() {
   // perform ajax request
+  // the response defaults to JSON with status code 200
 };
 ```
 
@@ -68,7 +69,7 @@ var responses = {
 }
 
 fakeResponses(responses, function() {
-  // perform ajax requests to `/emails` and `/user`
+  // perform ajax requests to `/emails`, `/user` and `/fail`
 });
 ```
 
