@@ -34,7 +34,7 @@ var response = { id: 12, comment: "Hey there"; };
 fakeResponse(response, function() {
   // perform ajax request
   // the response defaults to JSON with status code 200
-};
+});
 ```
 
 You can also specify status code and headers yourself:
@@ -47,7 +47,7 @@ var options = {
 }
 fakeResponse(response, options, function() {
   // perform ajax request
-};
+});
 ```
 
 fakeResponses
@@ -63,7 +63,7 @@ var responses = {
 
   // object which contain response, statuscode, and/or headers
   "/fail": {
-    response: { error: "Not found"},
+    response: { error: "Not found" },
     statusCode: 404
   }
 }
