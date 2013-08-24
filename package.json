@@ -12,7 +12,7 @@
     "url": "http://github.com/kjbekelund/responseFaker.js/blob/master/LICENSE"
   }],
   "scripts": {
-    "test": "buster test"
+    "test": "node_modules/.bin/buster test"
   },
   "dependencies": {
     "sinon": "~1.3"

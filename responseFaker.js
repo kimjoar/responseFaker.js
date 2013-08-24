@@ -14,7 +14,15 @@
 //
 // In both cases the `fakeResponse` and `fakeResponses` helpers will
 // be available.
-var responseFaker = (function(root, sinon) {
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        define(['sinon'], factory);
+    } else if (typeof exports === 'object') {
+        module.exports = factory(require('sinon'));
+    } else {
+        root.responseFaker = factory(root.sinon);
+    }
+}(this, function (sinon) {
 
   // fakeResponse
   // ------------
@@ -148,4 +156,4 @@ var responseFaker = (function(root, sinon) {
     return this;
   };
 
-})(this, sinon);
+}));
