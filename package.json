@@ -1,9 +1,9 @@
 {
   "author": "Kim Joar Bekkelund <mail@kimjoar.net> (http://kimjoar.net/)",
   "name": "responseFaker.js",
-  "main": "./responseFaker",
+  "main": "./responseFaker.js",
   "description": "A high-level API for sinon.js fakeServer",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "repository": {
     "url": "https://github.com/kjbekkelund/responseFaker.js"
   },

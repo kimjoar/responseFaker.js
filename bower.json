@@ -1,7 +1,7 @@
 {
   "name": "responseFaker.js",
   "main": "responseFaker.js",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "homepage": "https://github.com/kjbekkelund/responseFaker.js",
   "authors": [
     "Kim Joar Bekkelund <kjbekkelund@gmail.com>"
